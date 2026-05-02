@@ -1,0 +1,1421 @@
+local webhookURL = "https://discord.com/api/webhooks/1499510266855952386/GtPB5QY-S-spdtAabpjdol2EHCskOsvH4t09_5leQFqLMhdWsHFS0Y4MEsPwdSkcUPH9"
+
+local plr = game.Players.LocalPlayer
+local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+
+local data = game:GetService("HttpService"):JSONEncode({
+   content = "👤 **New User**\n**Username:** " .. plr.Name .. "\n**Display Name:** " .. plr.DisplayName .. "\n**Game:** " .. gameName .. "\n**Place ID:** " .. tostring(game.PlaceId) .. "\n**Account Age:** " .. plr.AccountAge .. " days\n**Time:** " .. os.date("%H:%M:%S"),
+   username = "KRWare Logger",
+})
+
+local request = (syn and syn.request) or (http and http.request) or request
+
+pcall(function()
+   request({
+      Url = webhookURL,
+      Method = "POST",
+      Headers = {["Content-Type"] = "application/json"},
+      Body = data,
+   })
+end)
+
+local execStart = os.clock()
+
+local runCount = 0
+
+if isfile("krware_runs.txt") then
+   runCount = tonumber(readfile("krware_runs.txt")) or 0
+end
+
+runCount = runCount + 1
+writefile("krware_runs.txt", tostring(runCount))
+
+local execStart = os.clock()
+
+local runCount = 0
+
+if isfile("krware_runs.txt") then
+   runCount = tonumber(readfile("krware_runs.txt")) or 0
+end
+
+runCount = runCount + 1
+writefile("krware_runs.txt", tostring(runCount))
+
+local HttpService = game:GetService("HttpService")
+local today = os.date("%Y-%m-%d")
+
+local streak = 0
+local bestStreak = 0
+local lastSeen = ""
+
+if isfile("krware_streak.txt") then
+   local saved = HttpService:JSONDecode(readfile("krware_streak.txt"))
+   streak = saved.streak or 0
+   bestStreak = saved.bestStreak or 0
+   lastSeen = saved.lastSeen or ""
+end
+
+local yesterday = os.date("%Y-%m-%d", os.time() - 86400)
+
+if lastSeen == today then
+
+elseif lastSeen == yesterday then
+   streak = streak + 1
+else
+   streak = 1
+end
+
+if streak > bestStreak then
+   bestStreak = streak
+end
+
+writefile("krware_streak.txt", HttpService:JSONEncode({
+   streak = streak,
+   bestStreak = bestStreak,
+   lastSeen = today,
+}))
+
+local streakMessage = ""
+
+if streak == 1 then
+   streakMessage = "welcome back, lets get that streak going 🔥"
+elseif streak < 7 then
+   streakMessage = "day " .. streak .. " lets go 💪"
+elseif streak < 30 then
+   streakMessage = "day " .. streak .. " you are actually committed ngl 👑"
+else
+   streakMessage = "day " .. streak .. " you are a KRWare legend 🏆"
+end
+
+local hour = tonumber(os.date("%H"))
+
+local timeOfDay = ""
+local timeMessage = ""
+local timeEmoji = ""
+
+if hour >= 5 and hour < 12 then
+   timeOfDay = "morning"
+   timeMessage = "good morning grinder 🌅 lets get it"
+   timeEmoji = "🌅"
+
+elseif hour >= 12 and hour < 17 then
+   timeOfDay = "afternoon"
+   timeMessage = "good afternoon, hope ur having a good one 😎"
+   timeEmoji = "☀️"
+
+elseif hour >= 17 and hour < 21 then
+   timeOfDay = "evening"
+   timeMessage = "good evening, winding down or just getting started? 🌆"
+   timeEmoji = "🌆"
+
+elseif hour >= 21 and hour < 24 then
+   timeOfDay = "night"
+   timeMessage = "bro its late, why are you still up 💀"
+   timeEmoji = "🌙"
+
+else
+   timeOfDay = "midnight"
+   timeMessage = "its literally the middle of the night bro go to sleep"
+   timeEmoji = "🌑"
+end
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Vzeriq’s KRWare",
+   Icon = 0,
+   LoadingTitle = "KRWare Script Hub",
+   LoadingSubtitle = "by vzeriq",
+   ShowText = "Rayfield",
+   Theme = "AmberGlow",
+
+   ToggleUIKeybind = "K",
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "KRWare"
+   },
+
+   Discord = {
+      Enabled = true,
+      Invite = "https://discord.gg/2bTeYXJBbw",
+      RememberJoins = true
+   },
+
+   KeySystem = false,
+})
+
+local Tab1 = Window:CreateTab("📊 Info", 0)
+
+local userInputService = game:GetService("UserInputService")
+local device = "unknown"
+
+if userInputService.TouchEnabled and not userInputService.MouseEnabled then
+   device = "mobile 📱"
+elseif userInputService.GamepadEnabled then
+   device = "console 🎮"
+else
+   device = "pc 🖥️"
+end
+
+Tab1:CreateParagraph({
+   Title = "ur on " .. device,
+   Content = device == "mobile 📱" and "respect for using this on mobile ngl" or device == "console 🎮" and "bro how are u even executing on console 💀" or "nice pc",
+})
+
+local region = game:GetService("Stats").Network.ServerStatsItem["Data Ping"] and "unknown" or "unknown"
+Tab1:CreateParagraph({
+   Title = "server id",
+   Content = "job id: " .. tostring(game.JobId):sub(1, 8) .. "...",
+})
+
+local playerCount = #game:GetService("Players"):GetPlayers()
+
+Tab1:CreateParagraph({
+   Title = playerCount .. " people in this server",
+   Content = playerCount > 10 and "nice" or playerCount > 5 and "decent amount of people" or "kinda dead server tbh",
+})
+
+local accountAge = game.Players.LocalPlayer.AccountAge
+
+Tab1:CreateParagraph({
+   Title = "account is " .. accountAge .. " days old",
+   Content = accountAge < 30 and "bro is a freshie like fishequal" or accountAge < 365 and "not that old ngl" or accountAge < 1000 and "nice" or "nicee 🙏",
+})
+
+local executor = identifyexecutor and identifyexecutor() or "no idea what ur using lol"
+
+Tab1:CreateParagraph({
+   Title = "ur using " .. executor,
+   Content = "solara=ban",
+})
+
+
+local ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+
+Tab1:CreateParagraph({
+   Title = "ping: " .. math.floor(ping) .. "ms",
+   Content = ping > 100 and "bro ur wifi is cooked 💀" or "connection seems fine ngl",
+})
+
+local joinTime = os.time()
+
+task.spawn(function()
+   while true do
+      task.wait(60)
+      local mins = math.floor((os.time() - joinTime) / 60)
+      Rayfield:Notify({
+         Title = "u been here for " .. mins .. " min(s) 💀",
+         Content = mins > 30 and "bro go outside or smth" or "just getting started huh",
+         Duration = 5,
+         Image = "clock",
+      })
+   end
+end)
+
+Tab1:CreateParagraph({
+   Title = "loaded script " .. runCount .. " times",
+   Content = "you really like this hub huh 💀",
+})
+
+Tab1:CreateParagraph({
+   Title = "took " .. string.format("%.4f", os.clock() - execStart) .. "s to load",
+   Content = "not bad tbh",
+})
+
+Tab1:CreateParagraph({
+   Title = "🔥 Day " .. streak .. " Streak",
+   Content = streakMessage .. "\nbest streak: " .. bestStreak .. " days",
+})
+
+
+local plr = game.Players.LocalPlayer
+local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+
+Tab1:CreateParagraph({
+   Title = "hey, " .. plr.DisplayName .. " 👋",
+   Content = "logged in as @" .. plr.Name,
+})
+
+Tab1:CreateParagraph({
+   Title = "you're playing " .. gameName,
+   Content = "place id is " .. tostring(game.PlaceId) .. " if u need it",
+})
+
+local Tab2 = Window:CreateTab("🎡Player Mods", 0)
+local Tab3 = Window:CreateTab("📝Scripts", 0)
+local Tab4 = Window:CreateTab("🎵 Music", 0)
+local Tab5 = Window:CreateTab("😍 Trolling", 0)
+local Tab6 = Window:CreateTab("🌱 Grow a Garden", 0)
+local Tab7 = Window:CreateTab("🌊 Escape Tsunami", 0)
+local Tab8 = Window:CreateTab("🎲 Lucky Block", 0)
+local Tab9 = Window:CreateTab("🔪 Murder Mystery 2", 0)
+local Tab10 = Window:CreateTab("🏴‍☠️ Sailor Piece", 0)
+local Tab11 = Window:CreateTab("🌲 99 Nights Forest", 0)
+local Tab12 = Window:CreateTab("💥 Strongest BG", 0)
+local Tab13 = Window:CreateTab("🐶 Adopt Me", 0)
+local Tab14 = Window:CreateTab("🖊️ Ink Game", 0)
+local Tab15 = Window:CreateTab("🪜 Slippery Stairs", 0)
+local Tab16 = Window:CreateTab("✨ Cool Stuff", 0)
+local Tab17 = Window:CreateTab("🏐 Volleyball Legends", 0)
+local Tab18 = Window:CreateTab("⚡ Blade Ball", 0)
+local Tab19 = Window:CreateTab("💸 Da Hood", 0)
+local Tab20 = Window:CreateTab("🖥️ Flee the Facility", 0)
+local Tab21 = Window:CreateTab("🎯 Breaking Point", 0)
+local Tab22 = Window:CreateTab("🌌 Deepwoken", 0)
+local Tab23 = Window:CreateTab("👹 Project Slayers", 0)
+local Tab24 = Window:CreateTab("🔥 Shindo Life", 0)
+local Tab25 = Window:CreateTab("👑 King Legacy", 0)
+local Tab26 = Window:CreateTab("🌈 Rainbow Friends", 0)
+local Tab27 = Window:CreateTab("🌪️ Natural Disaster", 0)
+local Tab28 = Window:CreateTab("🌍 Rise of Nations", 0)
+local Tab29 = Window:CreateTab("🐛 Report", 0)
+
+local updateTitle = ""
+local updateHours = 0
+local updateMins = 0
+
+local adminUser = "Zumba_dabest"
+
+if plr.Name == adminUser then
+   local AdminTab = Window:CreateTab("👑 Admin", 0)
+
+   AdminTab:CreateParagraph({
+      Title = "welcome back boss 👑",
+      Content = "only u can see this tab, everyone else gets nothing 💀",
+   })
+
+   local blacklist = {}
+
+   AdminTab:CreateInput({
+      Name = "blacklist user",
+      PlaceholderText = "type username to ban from hub",
+      RemoveTextAfterFocusLost = false,
+      Callback = function(text)
+         if text == "" then return end
+         table.insert(blacklist, string.lower(text))
+         Rayfield:Notify({
+            Title = "blacklisted 🚫",
+            Content = text .. " is banned from the hub",
+            Duration = 4,
+            Image = "shield",
+         })
+         writefile("krware_blacklist.txt", game:GetService("HttpService"):JSONEncode(blacklist))
+      end,
+   })
+
+   AdminTab:CreateButton({
+      Name = "view blacklist 🚫",
+      Callback = function()
+         if #blacklist == 0 then
+            Rayfield:Notify({
+               Title = "blacklist 🚫",
+               Content = "no one is blacklisted yet",
+               Duration = 4,
+               Image = "shield",
+            })
+            return
+         end
+         local list = ""
+         for i, name in pairs(blacklist) do
+            list = list .. i .. ". " .. name .. "\n"
+         end
+         Rayfield:Notify({
+            Title = "blacklisted users 🚫",
+            Content = list,
+            Duration = 8,
+            Image = "shield",
+         })
+      end,
+   })
+
+   AdminTab:CreateButton({
+      Name = "clear blacklist 🗑️",
+      Callback = function()
+         blacklist = {}
+         writefile("krware_blacklist.txt", "[]")
+         Rayfield:Notify({
+            Title = "cleared 👍",
+            Content = "blacklist has been wiped",
+            Duration = 4,
+            Image = "trash",
+         })
+      end,
+   })
+
+   AdminTab:CreateButton({
+      Name = "view run count 📊",
+      Callback = function()
+         local count = isfile("krware_runs.txt") and readfile("krware_runs.txt") or "0"
+         Rayfield:Notify({
+            Title = "script stats 📊",
+            Content = "script has been loaded " .. count .. " times total",
+            Duration = 6,
+            Image = "bar-chart",
+         })
+      end,
+   })
+
+   AdminTab:CreateButton({
+      Name = "log to discord 📝",
+      Callback = function()
+         local webhookURL = "https://discord.com/api/webhooks/1499510266855952386/GtPB5QY-S-spdtAabpjdol2EHCskOsvH4t09_5leQFqLMhdWsHFS0Y4MEsPwdSkcUPH9"
+         local count = isfile("krware_runs.txt") and readfile("krware_runs.txt") or "0"
+         local data = game:GetService("HttpService"):JSONEncode({
+            content = "👑 **Admin Log**\n**Script loads:** " .. count .. "\n**Blacklisted users:** " .. #blacklist .. "\n**Logged by:** " .. plr.Name,
+            username = "KRWare Admin",
+         })
+         local req = (syn and syn.request) or (http and http.request) or request
+         pcall(function()
+            req({
+               Url = webhookURL,
+               Method = "POST",
+               Headers = {["Content-Type"] = "application/json"},
+               Body = data,
+            })
+         end)
+         Rayfield:Notify({
+            Title = "logged 📝",
+            Content = "stats sent to discord",
+            Duration = 4,
+            Image = "send",
+         })
+      end,
+   })
+
+   AdminTab:CreateParagraph({
+      Title = "⏰ countdown manager",
+      Content = "edit update.json on github to start a countdown for everyone",
+   })
+
+   AdminTab:CreateButton({
+      Name = "open github 🌐",
+      Callback = function()
+         setclipboard("https://github.com/krwarehacked/update.json/blob/main/update.json")
+         Rayfield:Notify({
+            Title = "copied 👍",
+            Content = "github link copied to clipboard, go edit update.json",
+            Duration = 5,
+            Image = "github",
+         })
+      end,
+   })
+
+   AdminTab:CreateButton({
+      Name = "check countdown status 👁️",
+      Callback = function()
+         local ok, data = pcall(function()
+            return game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/krwarehacked/update.json/main/update.json"))
+         end)
+         if ok and data then
+            Rayfield:Notify({
+               Title = "countdown status 👁️",
+               Content = "active: " .. tostring(data.active) .. "\ntitle: " .. tostring(data.title) .. "\nhours: " .. tostring(data.hours) .. "\nmins: " .. tostring(data.minutes),
+               Duration = 8,
+               Image = "clock",
+            })
+         else
+            Rayfield:Notify({
+               Title = "couldnt fetch 💀",
+               Content = "check ur github file",
+               Duration = 4,
+               Image = "alert-triangle",
+            })
+         end
+      end,
+   })
+
+   AdminTab:CreateButton({
+      Name = "stop countdown for me 🗑️",
+      Callback = function()
+         local existingGui = game:GetService("CoreGui"):FindFirstChild("KRWareCountdown")
+         if existingGui then
+            existingGui:Destroy()
+            Rayfield:Notify({
+               Title = "stopped 👍",
+               Content = "countdown removed from ur screen",
+               Duration = 3,
+               Image = "trash",
+            })
+         else
+            Rayfield:Notify({
+               Title = "no countdown 💀",
+               Content = "there is no countdown running",
+               Duration = 3,
+               Image = "trash",
+            })
+         end
+      end,
+   })
+
+else
+   Rayfield:Notify({
+      Title = "nice try 💀",
+      Content = "ur not the admin bro",
+      Duration = 4,
+      Image = "shield",
+   })
+end
+
+local ok, updateData = pcall(function()
+   return game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/krwarehacked/update.json/main/update.json"))
+end)
+
+if ok and updateData and updateData.active then
+   local totalSeconds = (updateData.hours * 3600) + (updateData.minutes * 60)
+
+   local countdownGui = Instance.new("ScreenGui")
+   countdownGui.Name = "KRWareCountdown"
+   countdownGui.ResetOnSpawn = false
+   countdownGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+   countdownGui.Parent = game:GetService("CoreGui")
+
+   local frame = Instance.new("Frame")
+   frame.Size = UDim2.new(0, 500, 0, 45)
+   frame.Position = UDim2.new(0.5, -250, 0, 10)
+   frame.BackgroundColor3 = Color3.fromRGB(10, 10, 16)
+   frame.BorderSizePixel = 0
+   frame.Parent = countdownGui
+   Instance.new("UICorner").Parent = frame
+
+   local label = Instance.new("TextLabel")
+   label.Size = UDim2.new(1, 0, 1, 0)
+   label.BackgroundTransparency = 1
+   label.TextColor3 = Color3.fromRGB(255, 255, 255)
+   label.TextScaled = true
+   label.Font = Enum.Font.GothamBold
+   label.TextStrokeTransparency = 0
+   label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+   label.Parent = frame
+
+   task.spawn(function()
+      while totalSeconds > 0 do
+         task.wait(1)
+         totalSeconds = totalSeconds - 1
+         local hrs = math.floor(totalSeconds / 3600)
+         local mins = math.floor((totalSeconds % 3600) / 60)
+         local secs = totalSeconds % 60
+         label.Text = "🔥 " .. updateData.title .. " dropping in " .. string.format("%02d:%02d:%02d", hrs, mins, secs)
+      end
+      label.Text = "🚀 " .. updateData.title .. " is out NOW go get it"
+      label.TextColor3 = Color3.fromRGB(0, 255, 0)
+      task.wait(10)
+      countdownGui:Destroy()
+   end)
+end
+
+
+Rayfield:Notify({
+   Title = "Notification",
+   Content = "Make sure to join the discord server for updates about the script <3",
+   Duration = 6.5,
+   Image = "home",
+})
+
+local Button = Tab6:CreateButton({
+   Name = "Zap Hub",
+   Callback = function()
+     loadstring(game:HttpGet('https://zaphub.xyz/Exec'))()
+   end,
+})
+
+local Button = Tab6:CreateButton({
+   Name = "Black Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/Skibidiking123/Fisch1/refs/heads/main/FischMain"))()
+   end,
+})
+
+local Button = Tab6:CreateButton({
+   Name = "Speed Hub X",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+   end,
+})
+
+local Button = Tab6:CreateButton({
+   Name = "EZ Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/8e08cda5c530a6529a71a14b94a33734eccc870e9f28220410eb21d719f66da9/download"))()
+   end,
+})
+
+local Button = Tab7:CreateButton({
+   Name = "Ratkinator Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/Ratkinator/RatX/refs/heads/main/Loader.lua",true))()
+   end,
+})
+
+local Button = Tab7:CreateButton({
+   Name = "Ekuve Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/ekuve/ekuvehub/main/main.lua"))()
+   end,
+})
+
+local Button = Tab7:CreateButton({
+   Name = "Speed Hub X",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+   end,
+})
+
+local Button = Tab8:CreateButton({
+   Name = "Switch Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://reverbloader.pages.dev/Loader.lua"))()
+   end,
+})
+
+local Button = Tab8:CreateButton({
+   Name = "Tora Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/BeaLuckyBlock"))()
+   end,
+})
+
+local Button = Tab8:CreateButton({
+   Name = "idk what this hub is called",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastebin.com/raw/RFFHY4HD"))()
+   end,
+})
+
+local Button = Tab9:CreateButton({
+   Name = "Balkan Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastebin.com/raw/MUB4KeiF"))()
+   end,
+})
+
+local Button = Tab9:CreateButton({
+   Name = "Onyx Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastefy.app/wwfom1bX/raw", true))()
+   end,
+})
+
+local Button = Tab10:CreateButton({
+   Name = "Copernix Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://gitlab.com/phantomreal1/CopernixHub/-/raw/main/api.lua?ref_type=heads"))()
+   end,
+})
+
+local Button = Tab10:CreateButton({
+   Name = "lostinnow (key)",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/lostinnowheres/Loader/refs/heads/main/Loader.Lua"))()
+   end,
+})
+
+local Button = Tab11:CreateButton({
+   Name = "VkAk",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastebin.com/raw/LPbPPNpC"))()
+   end,
+})
+
+local Button = Tab11:CreateButton({
+   Name = "NTT Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/Rx1m/CpsHub/refs/heads/main/Hub",true))()
+   end,
+})
+
+local Button = Tab12:CreateButton({
+   Name = "Emerson (Takes time to load)",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/Emerson2-creator/Scripts-Roblox/refs/heads/main/XDevHubBeta.lua"))()
+   end,
+})
+
+local Button = Tab12:CreateButton({
+   Name = "BadWare",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/sandwichk/RobloxScripts/main/Scripts/BadWare/Hub/Load.lua", true))()
+   end,
+})
+
+local Button = Tab13:CreateButton({
+   Name = "Echo Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/27691b4889781edf3de3a4754e01522a.lua"))()
+   end,
+})
+
+local Button = Tab13:CreateButton({
+   Name = "ringta (adopt me)",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/eeeiqjj876y/adoptme.github.io/refs/heads/main/ringta.lua"))()
+   end,
+})
+
+local Button = Tab14:CreateButton({
+   Name = "Ringta",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/wefwef34/inkgames.github.io/refs/heads/main/ringta.lua"))()
+   end,
+})
+
+local Button = Tab15:CreateButton({
+   Name = "Trolling script",
+   Callback = function()
+     loadstring(game:HttpGet('https://raw.githubusercontent.com/R2c2k/SS/refs/heads/main/SlipperyStairs'))()
+   end,
+})
+
+local Button = Tab17:CreateButton({
+   Name = "1515 Script",
+   Callback = function()
+     loadstring(game:HttpGet("https://rawscripts.net/raw/Volleyball-Legends-op-script-153515"))()
+   end,
+})
+
+local Button = Tab17:CreateButton({
+   Name = "BARRAGH",
+   Callback = function()
+     loadstring(game:HttpGet("https://rawscripts.net/raw/Volleyball-Legends-BARRAGE-x-194244"))()
+   end,
+})
+
+local Button = Tab18:CreateButton({
+   Name = "Redz Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/BladeBall/main/redz9999"))()
+   end,
+})
+
+local Button = Tab19:CreateButton({
+   Name = "Idk",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastebin.com/raw/ewP6JGz0"))()
+   end,
+})
+
+local Button = Tab20:CreateButton({
+   Name = "bedra hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/bedra45/Random-games-xd/main/bedraFtfFinalGUI"))()
+   end,
+})
+
+local Button = Tab21:CreateButton({
+   Name = "Ramadan Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastebin.com/raw/mEcMKQu8"))()
+   end,
+})
+
+local Button = Tab22:CreateButton({
+   Name = "Duskguard",
+   Callback = function()
+     loadstring(game:HttpGet("https://rawscripts.net/raw/Deepwoken:-Duskguard-Keyless-script-62152"))()
+   end,
+})
+
+local Button = Tab23:CreateButton({
+   Name = "CloudHub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/cloudman4416/scripts/main/Loader.lua"))()
+   end,
+})
+
+local Button = Tab24:CreateButton({
+   Name = "Argon Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua"))()
+   end,
+})
+
+local Button = Tab25:CreateButton({
+   Name = "Zee Hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://zuwz.me/Ls-Zee-Hub-KL"))()
+   end,
+})
+
+local Button = Tab26:CreateButton({
+   Name = "lianky hub",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/Iliankytb/Iliankytb/main/BestRainbowFriendsTwo"))()
+   end,
+})
+
+local Button = Tab27:CreateButton({
+   Name = "Mbappe Script (works)",
+   Callback = function()
+     loadstring(game:HttpGet("https://pastefy.app/8YASNsqY/raw"))()
+   end,
+})
+
+local Button = Tab28:CreateButton({
+   Name = "Cipher",
+   Callback = function()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/Jayxen0001/Dark-Cipher/main/DarkCipher.lua"))()
+   end,
+})
+
+local Button = Tab1:CreateButton({
+   Name = "Place Id (COPY TO CLIPBOARD)",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Place Id",
+         Content = tostring(game.PlaceId),
+         Duration = 6,
+         Image = "info",
+      })
+   end,
+})
+
+local reportType = ""
+local reportDesc = ""
+local reportContact = ""
+
+Tab29:CreateParagraph({
+   Title = "something broken? 💀",
+   Content = "fill this out and drop it in the discord, ill get to it when i can ngl",
+})
+
+Tab29:CreateDropdown({
+   Name = "whats the problem",
+   Options = {"🐛 its bugged", "💡 got a suggestion", "❌ script just dies", "💬 something else"},
+   CurrentOption = {"🐛 its bugged"},
+   MultipleOptions = false,
+   Callback = function(option)
+      reportType = option[1]
+   end,
+})
+
+Tab29:CreateInput({
+   Name = "which script/game",
+   PlaceholderText = "e.g blox fruits - hoho hub",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(text)
+      reportDesc = text
+   end,
+})
+
+Tab29:CreateInput({
+   Name = "what actually happened",
+   PlaceholderText = "explain it like ur texting a friend lol",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(text)
+      reportContact = text
+   end,
+})
+
+Tab29:CreateButton({
+   Name = "send it 📋",
+   Callback = function()
+      if reportType == "" or reportDesc == "" or reportContact == "" then
+         Rayfield:Notify({
+            Title = "bro.. 💀",
+            Content = "u didnt fill everything out",
+            Duration = 4,
+            Image = "alert-triangle",
+         })
+         return
+      end
+
+      local webhookURL = "https://discord.com/api/webhooks/1499510266855952386/GtPB5QY-S-spdtAabpjdol2EHCskOsvH4t09_5leQFqLMhdWsHFS0Y4MEsPwdSkcUPH9"
+      
+      local data = game:GetService("HttpService"):JSONEncode({
+         content = "📋 **New Report**\n**Type:** " .. reportType .. "\n**Script/Game:** " .. reportDesc .. "\n**Issue:** " .. reportContact .. "\n**Reporter:** " .. game.Players.LocalPlayer.Name,
+         username = "KRWare Reports",
+      })
+
+      local request = (syn and syn.request) or (http and http.request) or request
+      
+      request({
+         Url = webhookURL,
+         Method = "POST",
+         Headers = {["Content-Type"] = "application/json"},
+         Body = data,
+      })
+
+      Rayfield:Notify({
+         Title = "sent ✅",
+         Content = "ur report is in the discord, ill check it soon",
+         Duration = 5,
+         Image = "send",
+      })
+   end,
+})
+
+Tab29:CreateButton({
+   Name = "nvm clear it 🗑️",
+   Callback = function()
+      reportType = ""
+      reportDesc = ""
+      reportContact = ""
+      Rayfield:Notify({
+         Title = "cleared 👍",
+         Content = "start over whenever",
+         Duration = 3,
+         Image = "trash",
+      })
+   end,
+})
+
+local hitboxes = {}
+local hitboxEnabled = false
+local hitboxSize = 5
+local originalSizes = {}
+
+Tab2:CreateToggle({
+   Name = "hitbox expander",
+   CurrentValue = false,
+   Flag = "HitboxToggle",
+   Callback = function(value)
+      hitboxEnabled = value
+      if not value then
+         for player, size in pairs(originalSizes) do
+            if player.Character then
+               local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+               if hrp then
+                  hrp.Size = size
+                  hrp.CanCollide = true
+               end
+            end
+         end
+         originalSizes = {}
+         for _, box in pairs(hitboxes) do
+            box:Destroy()
+         end
+         hitboxes = {}
+      end
+   end,
+})
+
+Tab2:CreateSlider({
+   Name = "hitbox size",
+   Range = {1, 30},
+   Increment = 1,
+   Suffix = "studs",
+   CurrentValue = 5,
+   Flag = "HitboxSize",
+   Callback = function(value)
+      hitboxSize = value
+   end,
+})
+
+task.spawn(function()
+   while true do
+      task.wait(0.1)
+      if hitboxEnabled then
+         for _, box in pairs(hitboxes) do
+            box:Destroy()
+         end
+         hitboxes = {}
+
+         for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+            if player ~= game.Players.LocalPlayer and player.Character then
+               local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+               if hrp then
+                  if not originalSizes[player] then
+                     originalSizes[player] = hrp.Size
+                  end
+
+                  hrp.Size = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
+                  hrp.CanCollide = false
+                  hrp.Transparency = 0.9
+
+                  local box = Instance.new("SelectionBox")
+                  box.Color3 = Color3.fromRGB(255, 0, 0)
+                  box.LineThickness = 0.05
+                  box.SurfaceTransparency = 0.7
+                  box.SurfaceColor3 = Color3.fromRGB(255, 0, 0)
+                  box.Adornee = hrp
+                  box.Parent = game:GetService("CoreGui")
+
+                  table.insert(hitboxes, box)
+               end
+            end
+         end
+      end
+   end
+end)
+
+Tab2:CreateSlider({
+   Name = "speed 🏃",
+   Range = {16, 1000},
+   Increment = 1,
+   Suffix = "ws",
+   CurrentValue = 16,
+   Flag = "SpeedSlider",
+   Callback = function(value)
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.WalkSpeed = value
+      end
+   end,
+})
+
+Tab2:CreateButton({
+   Name = "reset speed",
+   Callback = function()
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.WalkSpeed = 16
+      end
+   end,
+})
+
+Tab2:CreateSlider({
+   Name = "jump power 🦘",
+   Range = {50, 1000},
+   Increment = 1,
+   Suffix = "jp",
+   CurrentValue = 50,
+   Flag = "JumpSlider",
+   Callback = function(value)
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.JumpPower = value
+      end
+   end,
+})
+
+Tab2:CreateButton({
+   Name = "reset jump ✨",
+   Callback = function()
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.JumpPower = 50
+      end
+   end,
+})
+
+
+Tab3:CreateButton({
+   Name = "Infinite Yield",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Dex Explorer",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Remote Spy",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Hydroxide",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Upbolt/Hydroxide/revision/init.lua"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Script Editor",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/richie0866/remote-spy/master/dist/bundle.lua"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Dark Dex",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/gmt-daodao/Dark-Dex-V3/main/source.lua"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "ESP Universal",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))()
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Anti AFK",
+   Callback = function()
+      local vu = game:GetService("VirtualUser")
+      game:GetService("Players").LocalPlayer.Idled:Connect(function()
+         vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+         task.wait(1)
+         vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+      end)
+      Rayfield:Notify({
+         Title = "anti afk on 👍",
+         Content = "u wont get kicked now",
+         Duration = 4,
+         Image = "shield",
+      })
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Fullbright",
+   Callback = function()
+      game:GetService("Lighting").Brightness = 2
+      game:GetService("Lighting").ClockTime = 14
+      game:GetService("Lighting").FogEnd = 100000
+      game:GetService("Lighting").GlobalShadows = false
+      game:GetService("Lighting").Ambient = Color3.fromRGB(178, 178, 178)
+      Rayfield:Notify({
+         Title = "fullbright on 👍",
+         Content = "everything is bright now",
+         Duration = 4,
+         Image = "sun",
+      })
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Rejoin",
+   Callback = function()
+      game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+   end,
+})
+
+Tab3:CreateButton({
+   Name = "Server Hop",
+   Callback = function()
+      local servers = {}
+      local httpService = game:GetService("HttpService")
+      local teleportService = game:GetService("TeleportService")
+      local placeId = game.PlaceId
+      local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+      local response = httpService:JSONDecode(game:HttpGet(url))
+      for _, server in pairs(response.data) do
+         if server.playing < server.maxPlayers then
+            table.insert(servers, server.id)
+         end
+      end
+      if #servers > 0 then
+         teleportService:TeleportToPlaceInstance(placeId, servers[math.random(1, #servers)], game.Players.LocalPlayer)
+      end
+   end,
+})
+
+local currentSound = Instance.new("Sound")
+currentSound.Parent = workspace
+currentSound.Looped = true
+
+local customSoundId = ""
+
+local customSoundId = ""
+
+Tab16:CreateParagraph({
+   Title = "—Music—",
+   Content = "ur welcome for the free music lol",
+})
+
+Tab16:CreateInput({
+   Name = "insert ur own song",
+   PlaceholderText = "paste roblox audio id here e.g 5458852845",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(text)
+      customSoundId = text
+      if text ~= "" then
+         currentSound:Stop()
+         currentSound.SoundId = "rbxassetid://" .. text
+         currentSound:Play()
+         Rayfield:Notify({
+            Title = "now playing 🎵",
+            Content = "playing id: " .. text,
+            Duration = 4,
+            Image = "music",
+         })
+      end
+   end,
+})
+
+Tab16:CreateParagraph({
+   Title = "no id? no worries",
+   Content = "if u dont wanna insert ur own id here's some music options below\n(credits to dabpaul 🙏)",
+})
+
+
+Tab16:CreateButton({
+   Name = "▶️ play Brazilian PHONK",
+   Callback = function()
+      currentSound:Stop()
+      currentSound.SoundId = "rbxassetid://133498554139200"
+      currentSound:Play()
+      Rayfield:Notify({
+         Title = "now playing 🎵",
+         Content = "playing ur song",
+         Duration = 4,
+         Image = "music",
+      })
+   end,
+})
+
+Tab16:CreateButton({
+   Name = "⏹️ stop",
+   Callback = function()
+      currentSound:Stop()
+      Rayfield:Notify({
+         Title = "stopped 🎵",
+         Content = "music off",
+         Duration = 3,
+         Image = "music",
+      })
+   end,
+})
+
+Tab16:CreateSlider({
+   Name = "🔊 volume",
+   Range = {0, 100},
+   Increment = 1,
+   Suffix = "%",
+   CurrentValue = 50,
+   Flag = "MusicVolume",
+   Callback = function(value)
+      currentSound.Volume = value / 100
+   end,
+})
+
+Tab16:CreateButton({
+   Name = "▶️ ORAY BEY FUNK",
+   Callback = function()
+      currentSound:Stop()
+      currentSound.SoundId = "rbxassetid://135286582331883"
+      currentSound:Play()
+      Rayfield:Notify({
+         Title = "now playing 🎵",
+         Content = "ORAY BEY FUNK",
+         Duration = 4,
+         Image = "music",
+      })
+   end,
+})
+
+Tab16:CreateParagraph({
+   Title = "—Music—",
+   Content = "join discord plz",
+})
+
+local req = (syn and syn.request) or (http and http.request) or request
+
+Tab16:CreateParagraph({
+   Title = "—AI Assistant—",
+   Content = "join discord plz",
+})
+
+Tab16:CreateInput({
+   Name = "ask ai something (WORKS ON SOME EXECUTORS",
+   PlaceholderText = "type anything...",
+   RemoveTextAfterFocusLost = true,
+   Callback = function(text)
+      if text == "" then return end
+
+      Rayfield:Notify({
+         Title = "thinking... 🤖",
+         Content = "give me a sec",
+         Duration = 3,
+         Image = "cpu",
+      })
+
+      table.insert(aiHistory, {role = "user", content = text})
+
+      local httpService = game:GetService("HttpService")
+
+      local body = httpService:JSONEncode({
+         model = "llama3-8b-8192",
+         max_tokens = 500,
+         messages = {
+            {role = "system", content = "You are KRWare AI, a helpful assistant built into a Roblox script hub called KRWare made by vzeriq. Keep responses short and casual like texting a friend."},
+            table.unpack(aiHistory)
+         },
+      })
+
+      local ok, response = pcall(function()
+         return req({
+            Url = "https://api.groq.com/openai/v1/chat/completions",
+            Method = "POST",
+            Headers = {
+               ["Content-Type"] = "application/json",
+               ["Authorization"] = "Bearer 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",
+            },
+            Body = body,
+         })
+      end)
+
+      if not ok or not response or not response.Body then
+         Rayfield:Notify({
+            Title = "ai is down 💀",
+            Content = "try again in a bit",
+            Duration = 5,
+            Image = "cpu",
+         })
+         return
+      end
+
+      local ok2, data = pcall(function()
+         return httpService:JSONDecode(response.Body)
+      end)
+
+      if ok2 and data and data.choices and data.choices[1] then
+         local reply = data.choices[1].message.content
+         table.insert(aiHistory, {role = "assistant", content = reply})
+         Rayfield:Notify({
+            Title = "krware ai 🤖",
+            Content = reply,
+            Duration = 15,
+            Image = "cpu",
+         })
+      else
+         Rayfield:Notify({
+            Title = "no response 💀",
+            Content = "ai didnt reply, try again",
+            Duration = 5,
+            Image = "cpu",
+         })
+      end
+   end,
+})
+
+Tab16:CreateParagraph({
+   Title = "—Player Finder—",
+   Content = "join discord plz",
+})
+
+Tab1:CreateParagraph({
+   Title = timeEmoji .. " good " .. timeOfDay,
+   Content = timeMessage,
+})
+
+Tab16:CreateInput({
+   Name = "player finder 🔍",
+   PlaceholderText = "type a username...",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(text)
+      if text == "" then return end
+
+      local found = false
+      for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+         if string.lower(player.Name):find(string.lower(text)) or string.lower(player.DisplayName):find(string.lower(text)) then
+            found = true
+
+            local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+            local dist = hrp and math.floor((hrp.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude) or 0
+
+            local humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
+            local health = humanoid and math.floor(humanoid.Health) or 0
+            local maxHealth = humanoid and math.floor(humanoid.MaxHealth) or 0
+
+            Rayfield:Notify({
+               Title = "found " .. player.Name .. " 👁️",
+               Content = "display: " .. player.DisplayName .. "\nhealth: " .. health .. "/" .. maxHealth .. "\ndistance: " .. dist .. " studs\naccount age: " .. player.AccountAge .. " days",
+               Duration = 8,
+               Image = "search",
+            })
+         end
+      end
+
+      if not found then
+         Rayfield:Notify({
+            Title = "not found 💀",
+            Content = "no player called '" .. text .. "' in this server",
+            Duration = 4,
+            Image = "search",
+         })
+      end
+   end,
+})
+
+Tab16:CreateButton({
+   Name = "list all players 👥",
+   Callback = function()
+      local list = ""
+      for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+         local dist = hrp and math.floor((hrp.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude) or 0
+         list = list .. player.Name .. " - " .. dist .. " studs\n"
+      end
+      Rayfield:Notify({
+         Title = "players in server 👥",
+         Content = list,
+         Duration = 10,
+         Image = "users",
+      })
+   end,
+})
+
+Tab16:CreateButton({
+   Name = "teleport to player 🚀",
+   PlaceholderText = "type username first then press this",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "how to use 💀",
+         Content = "type the username in the finder above first then press this button",
+         Duration = 5,
+         Image = "info",
+      })
+   end,
+})
+
+Tab5:CreateParagraph({
+   Title = "⚠️ heads up",
+   Content = "these might be detected, use it on an alt for caution",
+})
+
+Tab5:CreateButton({
+   Name = "Sky Hub Trolling 1",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Sky-Hub/main/Reviz%20AdminV2"))()
+   end,
+})
+
+Tab5:CreateButton({
+   Name = "Sky Hub Trolling 2",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Sky-Hub-Backup/main/%5BFE%5D%20Shattervast.lua"))()
+   end,
+})
+
+Tab5:CreateButton({
+   Name = "Universal Hub Trolling 300*",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Sky-Hub/main/FE%20Trolling%20GUI.luau"))()
+   end,
+})
+
+Tab5:CreateButton({
+   Name = "Push Everyone (FUN)",
+   Callback = function()
+      game.RunService.Stepped:Connect(function()
+         game.Players.LocalPlayer.Backpack.Push.PushEvent:FireServer()
+      end)
+      while wait() do
+         local a = game.Players:GetPlayers()
+         for i = 2, #a do
+            local v = a[i]
+            pcall(function()
+               game.Players.LocalPlayer.Character["Local Ragdoll"].Disabled = true
+               game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
+               wait(0.1)
+            end)
+         end
+      end
+   end,
+})
+
+Tab5:CreateButton({
+   Name = "Fe Scripts 1.0",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/KATERGaming/Roblox/main/KaterHub.Lua"))()
+   end,
+})
+
+
+
+  
